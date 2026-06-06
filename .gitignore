@@ -1,0 +1,16 @@
+# Віртуальне середовище
+venv/
+ENV/
+
+# Тимчасові файли Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# База даних та медіа
+db.sqlite3
+media/
+
+# Налаштування IDE
+.vscode/
+.idea/
