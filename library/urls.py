@@ -17,4 +17,5 @@ urlpatterns = [
     path('v2/books/<int:pk>/', views.BookDetailAPIView.as_view(), name='v2_book_detail'),
     path('v2/books/available/', views.AvailableBookListAPIView.as_view(), name='v2_available_books'),
     path('v2/borrowings/', views.BorrowingListCreateAPIView.as_view(), name='v2_borrowing_list_create'),
+    path('v2/borrowings/<int:pk>/', views.BorrowingDetailAPIView.as_view(), name='v2_borrowing_detail'),
 ]

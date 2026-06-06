@@ -1,0 +1,944 @@
+openapi: 3.0.3
+info:
+  title: Library Management API
+  version: 1.0.0
+  description: 'REST API для автоматизації процесів бібліотеки: книги, автори, читачі
+    та позики книг'
+paths:
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/token/verify/:
+    post:
+      operationId: token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/v1/authors/:
+    get:
+      operationId: v1_authors_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+          description: ''
+  /api/v1/authors/{id}/:
+    get:
+      operationId: v1_authors_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+  /api/v1/books/:
+    get:
+      operationId: v1_books_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+          description: ''
+  /api/v1/books/{id}/:
+    get:
+      operationId: v1_books_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetail'
+          description: ''
+  /api/v1/books/available/:
+    get:
+      operationId: v1_books_available_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+          description: ''
+  /api/v1/borrowings/:
+    get:
+      operationId: v1_borrowings_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Borrowing'
+          description: ''
+  /api/v2/authors/:
+    get:
+      operationId: v2_authors_list
+      description: Отримання списку авторів або створення нового автора
+      tags:
+      - Authors
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+          description: ''
+    post:
+      operationId: v2_authors_create
+      description: Отримання списку авторів або створення нового автора
+      tags:
+      - Authors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Author'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Author'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+  /api/v2/authors/{author_id}/:
+    get:
+      operationId: v2_authors_retrieve
+      description: Перегляд, зміна або видалення конкретного автора
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Authors
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    put:
+      operationId: v2_authors_update
+      description: Перегляд, зміна або видалення конкретного автора
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Authors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Author'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Author'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    patch:
+      operationId: v2_authors_partial_update
+      description: Перегляд, зміна або видалення конкретного автора
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Authors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    delete:
+      operationId: v2_authors_destroy
+      description: Перегляд, зміна або видалення конкретного автора
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Authors
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v2/books/:
+    get:
+      operationId: v2_books_list
+      description: Отримання списку книг або додавання нової книги
+      tags:
+      - Books
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+          description: ''
+    post:
+      operationId: v2_books_create
+      description: Отримання списку книг або додавання нової книги
+      tags:
+      - Books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Book'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+          description: ''
+  /api/v2/books/{id}/:
+    get:
+      operationId: v2_books_retrieve
+      description: Перегляд, редагування або видалення конкретної книги
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Books
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetail'
+          description: ''
+    put:
+      operationId: v2_books_update
+      description: Перегляд, редагування або видалення конкретної книги
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetail'
+          description: ''
+    patch:
+      operationId: v2_books_partial_update
+      description: Перегляд, редагування або видалення конкретної книги
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetail'
+          description: ''
+    delete:
+      operationId: v2_books_destroy
+      description: Перегляд, редагування або видалення конкретної книги
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Books
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v2/books/available/:
+    get:
+      operationId: v2_books_available_list
+      description: Повертає список книг, які є в наявності (кількість копій > 0)
+      summary: Отримати список доступних книг
+      tags:
+      - Books
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+          description: ''
+  /api/v2/borrowings/:
+    get:
+      operationId: v2_borrowings_list
+      description: Отримання історії позик або створення нового запису позики
+      tags:
+      - Borrowings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Borrowing'
+          description: ''
+    post:
+      operationId: v2_borrowings_create
+      description: Отримання історії позик або створення нового запису позики
+      tags:
+      - Borrowings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrowing'
+          description: ''
+  /api/v2/borrowings/{id}/:
+    get:
+      operationId: v2_borrowings_retrieve
+      description: Перегляд деталей конкретної позики або оновлення дати повернення
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Borrowings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrowing'
+          description: ''
+    put:
+      operationId: v2_borrowings_update
+      description: Перегляд деталей конкретної позики або оновлення дати повернення
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Borrowings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrowing'
+          description: ''
+    patch:
+      operationId: v2_borrowings_partial_update
+      description: Перегляд деталей конкретної позики або оновлення дати повернення
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Borrowings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBorrowing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBorrowing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBorrowing'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrowing'
+          description: ''
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        bio:
+          type: string
+        birth_date:
+          type: string
+          format: date
+          nullable: true
+        photo:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - bio
+      - id
+      - name
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 300
+        author:
+          type: integer
+        description:
+          type: string
+        isbn:
+          type: string
+          maxLength: 13
+        published_date:
+          type: string
+          format: date
+        pages:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        cover:
+          type: string
+          format: uri
+          nullable: true
+        available_copies:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_available:
+          type: boolean
+          readOnly: true
+      required:
+      - author
+      - description
+      - id
+      - is_available
+      - isbn
+      - pages
+      - published_date
+      - title
+    BookDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 300
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        description:
+          type: string
+        isbn:
+          type: string
+          maxLength: 13
+        published_date:
+          type: string
+          format: date
+        pages:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        cover:
+          type: string
+          format: uri
+          nullable: true
+        available_copies:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_available:
+          type: boolean
+          readOnly: true
+        total_borrowings:
+          type: integer
+          readOnly: true
+      required:
+      - author
+      - description
+      - id
+      - is_available
+      - isbn
+      - pages
+      - published_date
+      - title
+      - total_borrowings
+    Borrowing:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        book:
+          type: integer
+        book_title:
+          type: string
+          readOnly: true
+        reader_name:
+          type: string
+          readOnly: true
+        borrowed_date:
+          type: string
+          format: date
+          readOnly: true
+        return_date:
+          type: string
+          format: date
+          nullable: true
+        is_returned:
+          type: boolean
+        days_borrowed:
+          type: integer
+          readOnly: true
+      required:
+      - book
+      - book_title
+      - borrowed_date
+      - days_borrowed
+      - id
+      - reader_name
+    PatchedAuthor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        bio:
+          type: string
+        birth_date:
+          type: string
+          format: date
+          nullable: true
+        photo:
+          type: string
+          format: uri
+          nullable: true
+    PatchedBookDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 300
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        description:
+          type: string
+        isbn:
+          type: string
+          maxLength: 13
+        published_date:
+          type: string
+          format: date
+        pages:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        cover:
+          type: string
+          format: uri
+          nullable: true
+        available_copies:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_available:
+          type: boolean
+          readOnly: true
+        total_borrowings:
+          type: integer
+          readOnly: true
+    PatchedBorrowing:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        book:
+          type: integer
+        book_title:
+          type: string
+          readOnly: true
+        reader_name:
+          type: string
+          readOnly: true
+        borrowed_date:
+          type: string
+          format: date
+          readOnly: true
+        return_date:
+          type: string
+          format: date
+          nullable: true
+        is_returned:
+          type: boolean
+        days_borrowed:
+          type: integer
+          readOnly: true
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
